@@ -6,14 +6,14 @@ import { env } from "../../config/env";
 export async function dbPing(req: Request, res: Response) {
   try {
     const count = await prisma.user.count();
-    if (count === 0) {
-      await prisma.user.create({
-        data: {
-          email: `test_${Date.now()}@example.com`,
-          role: "USER",
-        },
-      });
-    }
+    // if (count === 0) {
+    //   await prisma.user.create({
+    //     data: {
+    //       email: `test_${Date.now()}@example.com`,
+    //       role: "USER",
+    //     },
+    //   });
+    // }
     const newCount = await prisma.user.count();
     res.json({ ok: true, usersCount: newCount });
   } catch (err: any) {
