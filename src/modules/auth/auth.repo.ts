@@ -5,12 +5,16 @@ export const authRepo = {
   findUserByEmail: (email: string) =>
     prisma.user.findUnique({ where: { email } }),
 
-  findUserById: (id: string) =>
-    prisma.user.findUnique({ where: { id } }),
+  findUserById: (id: string) => prisma.user.findUnique({ where: { id } }),
 
   createUser: (data: { name: string; email: string; passwordHash: string }) =>
     prisma.user.create({
-      data: { ...data, role: Role.USER, isEmailVerified: false, isArchived: false },
+      data: {
+        ...data,
+        role: Role.USER,
+        isEmailVerified: false,
+        isArchived: false,
+      },
     }),
 
   createSession: (data: { userId: string; userAgent?: string; ip?: string }) =>
@@ -23,13 +27,23 @@ export const authRepo = {
     }),
 
   revokeSession: (sessionId: string) =>
-    prisma.session.update({ where: { id: sessionId }, data: { revokedAt: new Date() } }),
+    prisma.session.update({
+      where: { id: sessionId },
+      data: { revokedAt: new Date() },
+    }),
 
   touchSession: (sessionId: string) =>
-    prisma.session.update({ where: { id: sessionId }, data: { lastSeenAt: new Date() } }),
+    prisma.session.update({
+      where: { id: sessionId },
+      data: { lastSeenAt: new Date() },
+    }),
 
-  createToken: (data: { userId: string; type: TokenType; tokenHash: string; expiresAt: Date }) =>
-    prisma.token.create({ data }),
+  createToken: (data: {
+    userId: string;
+    type: TokenType;
+    tokenHash: string;
+    expiresAt: Date;
+  }) => prisma.token.create({ data }),
 
   findValidToken: (data: { tokenHash: string; type: TokenType }) =>
     prisma.token.findFirst({
@@ -45,7 +59,10 @@ export const authRepo = {
     prisma.token.update({ where: { id }, data: { usedAt: new Date() } }),
 
   markUserEmailVerified: (userId: string) =>
-    prisma.user.update({ where: { id: userId }, data: { isEmailVerified: true } }),
+    prisma.user.update({
+      where: { id: userId },
+      data: { isEmailVerified: true },
+    }),
 
   updatePassword: (userId: string, passwordHash: string) =>
     prisma.user.update({ where: { id: userId }, data: { passwordHash } }),
@@ -54,5 +71,15 @@ export const authRepo = {
     prisma.session.updateMany({
       where: { userId, revokedAt: null },
       data: { revokedAt: new Date() },
+    }),
+
+  getFreePackage: () =>
+    prisma.package.findFirst({
+      where: { name: "Free", isSystem: true, isActive: true },
+    }),
+
+  createSubscription: (data: { userId: string; packageId: string }) =>
+    prisma.userSubscription.create({
+      data: { userId: data.userId, packageId: data.packageId },
     }),
 };
