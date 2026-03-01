@@ -3,7 +3,6 @@ import { ok, created } from "../../utils/response";
 import { filesService } from "./files.service";
 import { paramId } from "../../utils/params";
 
-
 export const filesController = {
   async listInFolder(req: Request, res: Response, next: NextFunction) {
     try {
@@ -11,7 +10,9 @@ export const filesController = {
       const folderId = paramId(req.params.id);
 
       return ok(res, await filesService.list(userId, folderId));
-    } catch (e) { next(e); }
+    } catch (e) {
+      next(e);
+    }
   },
 
   async upload(req: Request, res: Response, next: NextFunction) {
@@ -23,34 +24,61 @@ export const filesController = {
 
       const result = await filesService.upload(userId, folderId, file);
       return created(res, result, "File uploaded");
-    } catch (e) { next(e); }
+    } catch (e) {
+      next(e);
+    }
   },
+  // files.controller.ts
+  // async download(req: Request, res: Response, next: NextFunction) {
+  //   try {
+  //     const userId = req.auth!.userId;
+  //     const fileId = req.params.id.toString();
+  //     const result = await filesService.download(userId, fileId);
+  //     return ok(res, result); // { url }
+  //   } catch (e) {
+  //     next(e);
+  //   }
+  // },
 
+  // files.controller.ts download
   async download(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = req.auth!.userId;
-            const folderId = paramId(req.params.id);
-
-      const { url } = await filesService.download(userId, folderId);
-      return res.redirect(url);
-    } catch (e) { next(e); }
+      const fileId = paramId(req.params.id, "id");
+      const result = await filesService.download(userId, fileId);
+      return ok(res, result);
+    } catch (e) {
+      next(e);
+    }
   },
 
   async rename(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = req.auth!.userId;
-            const folderId = paramId(req.params.id);
+      const folderId = paramId(req.params.id);
 
-      return ok(res, await filesService.rename(userId, folderId, req.body.name), "File renamed");
-    } catch (e) { next(e); }
+      return ok(
+        res,
+        await filesService.rename(userId, folderId, req.body.name),
+        "File renamed",
+      );
+    } catch (e) {
+      next(e);
+    }
   },
 
   async remove(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = req.auth!.userId;
-            const folderId = paramId(req.params.id);
+      const folderId = paramId(req.params.id);
 
-      return ok(res, await filesService.archive(userId, folderId), "File archived");
-    } catch (e) { next(e); }
+      return ok(
+        res,
+        await filesService.archive(userId, folderId),
+        "File archived",
+      );
+    } catch (e) {
+      next(e);
+    }
   },
 };
