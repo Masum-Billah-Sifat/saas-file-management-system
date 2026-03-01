@@ -59,7 +59,7 @@ export const authService = {
       role: user.role,
     });
 
-    const verificationLink = buildLink(`/auth/verify-email?token=${raw}`);
+    const verificationLink = buildLink(`/verify-email?token=${raw}`);
 
     return {
       user: {
@@ -145,7 +145,7 @@ export const authService = {
       expiresAt,
     });
 
-    const verificationLink = buildLink(`/auth/verify-email?token=${raw}`);
+    const verificationLink = buildLink(`/verify-email?token=${raw}`);
     return { verificationLink };
   },
 
@@ -181,7 +181,7 @@ export const authService = {
       expiresAt,
     });
 
-    const resetLink = buildLink(`/auth/reset-password?token=${raw}`);
+    const resetLink = buildLink(`/reset-password?token=${raw}`);
     return { ok: true, resetLink }; // mock
   },
 
