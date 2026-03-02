@@ -16,6 +16,7 @@ export function createApp() {
 
   app.use(healthRouter);
   app.use(storageRouter);
+  
   app.use(authRouter);
 
   app.use(packagesRouter);
